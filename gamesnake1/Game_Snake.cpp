@@ -63,27 +63,31 @@ void move(int huong); // di chuyen ran
 void batsk(int& huong); // bat su kien tu ban phim
 void draw_wall(); // ve tuong
 bool check_game_over(); // kiem tra dung game
-void game_over();
+int game_over();
 
 ///////////////////////////////////////////////////////////////////////////////////
 int main() {
-	init_snake();
+	int k;
+	do {
+		setTextColor(15);
+		init_snake();
 
-	int huong = KEY_RIGHT;
-	noCursorType();
-	// game loop
-	while (true) {
-		clrscr();
-		draw_wall();
-		move(huong);
-		batsk(huong);
-		draw_snake();
-		if (check_game_over()) {
-			break;
+		int huong = KEY_RIGHT;
+		noCursorType();
+		// game loop
+		while (true) {
+			clrscr();
+			draw_wall();
+			move(huong);
+			batsk(huong);
+			draw_snake();
+			if (check_game_over()) {
+				break;
+			}
+			Sleep(100);
 		}
-		Sleep(100);
-	}
-	game_over();
+		k = game_over();
+	} while (k != '0');
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -231,10 +235,15 @@ bool check_game_over() {
 	return false;
 }
 
-void game_over() {
+int game_over() {
 	clrscr();
 	setTextColor(12);
-	cout << "Your score: " << soDot - 2;	
-	setTextColor(5);
+	cout << "Your score: " << soDot - 2 << "\n";
+	setTextColor(10);
 	cout << "Press 1 to try again." << "\n" << "Press 0 to exit.";
+	int k;
+	do {
+		k = _getch();
+	} while (k != '1' && k != '0');
+	return k;
 }
