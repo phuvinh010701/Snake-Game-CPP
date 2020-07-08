@@ -58,8 +58,8 @@ int whereY(); // vi tri y
 void noCursorType(); // xoa con tro nhap nhay
 void setTextColor(int color); // chinh mau text
 void init_snake(); // khoi tao ran
-void draw_snake(); // ve ran
-void move(int huong); // di chuyen ran
+void draw_snake(TOADO last_point); // ve ran
+TOADO move(int huong); // di chuyen ran
 void batsk(int& huong); // bat su kien tu ban phim
 void draw_wall(); // ve tuong
 bool check_game_over(); // kiem tra dung game
@@ -69,18 +69,20 @@ int game_over();
 int main() {
 	int k;
 	do {
+		clrscr();
 		setTextColor(15);
 		init_snake();
 
 		int huong = KEY_RIGHT;
 		noCursorType();
+		draw_wall();
 		// game loop
+
 		while (true) {
-			clrscr();
-			draw_wall();
-			move(huong);
+
+			TOADO last_point = move(huong);
 			batsk(huong);
-			draw_snake();
+			draw_snake(last_point);
 			if (check_game_over()) {
 				break;
 			}
@@ -172,14 +174,18 @@ void init_snake() {
 	ran[1].x = ran[1].y = 2;
 }
 
-void draw_snake() {
+void draw_snake(TOADO last_point) {
+
 	for (int i = 0; i < soDot; ++i) {
 		gotoXY(ran[i].x, ran[i].y);
-		cout << char(DOT_RAN);
+		cout << 'X';
 	}
-}
-void move(int huong) {
 
+	gotoXY(last_point.x, last_point.y);
+	cout << " ";
+}
+TOADO move(int huong) {
+	TOADO last_point = ran[soDot - 1];
 	for (int i = soDot - 1; i >= 1; --i) {
 		ran[i] = ran[i - 1];
 	}
@@ -197,6 +203,7 @@ void move(int huong) {
 		ran[0].x++;
 		break;
 	}
+	return last_point;
 }
 
 void batsk(int& huong) {
