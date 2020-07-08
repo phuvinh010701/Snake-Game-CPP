@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// color
 #define BLACK_COLOR			0
 #define DARK_BLUE_COLOR		1
 #define DARK_GREEN_COLOR	2
@@ -23,14 +24,24 @@ using namespace std;
 #define YELLOW_COLOR		14
 #define WHITE_COLOR			15
 
+// get key
 #define KEY_UP		1072
 #define KEY_DOWN	1080
 #define KEY_LEFT	1075
 #define KEY_RIGHT	1077
 #define KEY_NONE	-1
 
+// chieu dai ran
 #define DOT_RAN 254
+
+// chieu dai max
 #define MAX 100
+
+// toa do cac buc tuong
+#define TREN 0
+#define DUOI 20
+#define TRAI 0
+#define PHAI 60
 
 struct TOADO {
 	int x, y;
@@ -40,32 +51,40 @@ TOADO ran[MAX];
 int soDot = 3;
 
 int inputKey();
-void clrscr();
-void gotoXY(int x, int y);
-int whereX();
-int whereY();
-void noCursorType();
-void setTextColor(int color);
-void khoitaoRan();
-void veran();
-void dichuyen(int huong);
-void batsk(int& huong);
-///////////////////
+void clrscr(); // xoa man hinh
+void gotoXY(int x, int y); // di chuyen den toa do XY
+int whereX(); // vi tri X
+int whereY(); // vi tri y
+void noCursorType(); // xoa con tro nhap nhay
+void setTextColor(int color); // chinh mau text
+void init_snake(); // khoi tao ran
+void draw_snake(); // ve ran
+void move(int huong); // di chuyen ran
+void batsk(int& huong); // bat su kien tu ban phim
+void draw_wall(); // ve tuong
+bool check_game_over(); // kiem tra dung game
+
 int main() {
-	khoitaoRan();
+	init_snake();
+	
 	int huong = KEY_RIGHT;
+	noCursorType();
+	// game loop
 	while (true) {
 		clrscr();
-		dichuyen(huong);
+		draw_wall();
+		move(huong);
 		batsk(huong);
-		veran();
+		draw_snake();
+		if (check_game_over()) {
+			break;
+		}
 		Sleep(100);
 	}
 
 }
 
 
-//////////////////
 int inputKey()
 {
 	if (_kbhit())
@@ -142,20 +161,20 @@ void setTextColor(int color)
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 }
 
-void khoitaoRan() {
+void init_snake() {
 	ran[0].x = 4;
 	ran[1].x = 5;
 	ran[2].x = 6;
-	ran[0].y = ran[1].y = ran[2].y = 1;
+	ran[0].y = ran[1].y = ran[2].y = 2;
 }
 
-void veran() {
+void draw_snake() {
 	for (int i = 0; i < soDot; ++i) {
 		gotoXY(ran[i].x, ran[i].y);
 		cout << char(DOT_RAN);
 	}
 }
-void dichuyen(int huong) {
+void move(int huong) {
 	
 	for (int i = soDot - 1; i >= 1; --i) {
 		ran[i] = ran[i - 1];
@@ -182,4 +201,29 @@ void batsk(int& huong) {
 	else if (key == 1080) huong = KEY_DOWN;
 	else if (key ==1075) huong = KEY_LEFT;
 	else if (key == 1077) huong = KEY_RIGHT;
+	else {
+		return;
+	}
+}
+
+void draw_wall() {
+	for (int x = TRAI; x <= PHAI ; ++x) {
+		gotoXY(x, TREN);
+		cout << (char)223;
+		gotoXY(x, DUOI);
+		cout << (char)220;
+	}
+	for (int y = TREN; y <= DUOI; ++y) {
+		gotoXY(TRAI, y);
+		cout << (char)222;
+		gotoXY(PHAI, y);
+		cout << (char)221;
+	}
+}
+
+bool check_game_over() {
+	if (ran[0].y == TREN || ran[0].y == DUOI || ran[0].x == TRAI || ran[0].x == PHAI) {
+		return true;
+	}
+	return false;
 }
