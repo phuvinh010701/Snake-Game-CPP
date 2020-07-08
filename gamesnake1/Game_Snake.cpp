@@ -234,5 +234,7 @@ bool check_game_over() {
 void game_over() {
 	clrscr();
 	setTextColor(12);
-	cout << "QUAN NGU VCL";
+	cout << "Your score: " << soDot - 2;	
+	setTextColor(5);
+	cout << "Press 1 to try again." << "\n" << "Press 0 to exit.";
 }
