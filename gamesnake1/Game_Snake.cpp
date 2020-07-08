@@ -165,7 +165,7 @@ void init_snake() {
 	ran[0].x = 4;
 	ran[1].x = 5;
 	ran[2].x = 6;
-	ran[0].y = ran[1].y = ran[2].y = 2;
+	ran[0].y = ran[1].y = ran[2].y = 1;
 }
 
 void draw_snake() {
@@ -224,6 +224,9 @@ void draw_wall() {
 bool check_game_over() {
 	if (ran[0].y == TREN || ran[0].y == DUOI || ran[0].x == TRAI || ran[0].x == PHAI) {
 		return true;
+	}
+	for (int i = 1; i < soDot; ++i) {
+		if (ran[0].x == ran[i].x && ran[0].y == ran[i].y) return false;
 	}
 	return false;
 }
