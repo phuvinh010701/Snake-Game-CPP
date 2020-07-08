@@ -31,7 +31,7 @@ using namespace std;
 #define KEY_RIGHT	1077
 #define KEY_NONE	-1
 
-// chieu dai ran
+// hinh dang cua mot not ran
 #define DOT_RAN 254
 
 // chieu dai max
@@ -48,7 +48,7 @@ struct TOADO {
 };
 
 TOADO ran[MAX];
-int soDot = 3;
+int soDot = 2;
 
 int inputKey();
 void clrscr(); // xoa man hinh
@@ -63,7 +63,9 @@ void move(int huong); // di chuyen ran
 void batsk(int& huong); // bat su kien tu ban phim
 void draw_wall(); // ve tuong
 bool check_game_over(); // kiem tra dung game
+void game_over();
 
+///////////////////////////////////////////////////////////////////////////////////
 int main() {
 	init_snake();
 
@@ -81,10 +83,10 @@ int main() {
 		}
 		Sleep(100);
 	}
-
+	game_over();
 }
 
-
+///////////////////////////////////////////////////////////////////////////////////
 int inputKey()
 {
 	if (_kbhit())
@@ -162,10 +164,8 @@ void setTextColor(int color)
 }
 
 void init_snake() {
-	ran[0].x = 4;
-	ran[1].x = 5;
-	ran[2].x = 6;
-	ran[0].y = ran[1].y = ran[2].y = 1;
+	ran[0].x = ran[0].y = 1;
+	ran[1].x = ran[1].y = 2;
 }
 
 void draw_snake() {
@@ -226,7 +226,13 @@ bool check_game_over() {
 		return true;
 	}
 	for (int i = 1; i < soDot; ++i) {
-		if (ran[0].x == ran[i].x && ran[0].y == ran[i].y) return false;
+		if (ran[0].x == ran[i].x && ran[0].y == ran[i].y) return true;
 	}
 	return false;
+}
+
+void game_over() {
+	clrscr();
+	setTextColor(12);
+	cout << "QUAN NGU VCL";
 }
