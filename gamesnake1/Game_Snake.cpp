@@ -36,7 +36,7 @@ using namespace std;
 #define DOT_RAN 254
 
 //hinh dang cua fruit
-#define FRUIT 42
+#define FRUIT '0'
 // chieu dai max
 #define MAX 100
 
@@ -55,50 +55,36 @@ struct TOADO {
 TOADO ran[MAX];
 int soDot = 2;
 
-int inputKey(); // lay phim tu keyboard
-void clrscr(); // xoa man hinh
-void gotoXY(int x, int y); // di chuyen den toa do XY
-int whereX(); // vi tri X
-int whereY(); // vi tri y
-void noCursorType(); // xoa con tro nhap nhay
-void setTextColor(int color); // chinh mau text
-void init_snake(); // khoi tao ran
-void draw_snake(TOADO last_point); // ve ran
-TOADO move(int huong); // di chuyen ran
-void batsk(int& huong); // bat su kien tu ban phim
-void draw_wall(); // ve tuong
-bool check_game_over(); // kiem tra dung game
-int game_over(); // xu li game over
-TOADO random_fruit(); // ran dom moi
-bool check_snake_eat(TOADO fruit); // kiem tra ran an moi
-void snake_eat(TOADO& fruit, int& time); // xu li khi ran an duoc moi
-void display_menu();
-///////////////////////////////////////////////////////////////////////////////////
+int inputKey();							// lay phim tu keyboard
+void clrscr();							// xoa man hinh
+void gotoXY(int x, int y);				// di chuyen den toa do XY
+int whereX();							// vi tri X
+int whereY();							// vi tri y
+void noCursorType();					// xoa con tro nhap nhay
+void setTextColor(int color);			// chinh mau text
+void init_snake();						// khoi tao ran
+void draw_snake(TOADO last_point);		// ve ran
+TOADO move(int huong);					// di chuyen ran
+void batsk(int& huong);					// bat su kien tu ban phim
+void draw_wall();						// ve tuong
+bool check_game_over();					// kiem tra dung game
+int game_over();						// xu li game over
+TOADO random_fruit();					// tao moi ngau nhien
+bool check_snake_eat(TOADO fruit);		// kiem tra ran an moi
+void snake_eat(TOADO& fruit, int& time);// xu li khi ran an duoc moi
+void display_menu();					// hien thi bang menu
+void select_difficulty(int& time);		// chon do kho
+
+
 int main() {
 	int k;
 	do {
 		setTextColor(15);
 		display_menu();
-		int dokho;
+
 		int time;
-		dokho = _getch();
-		switch (dokho) {
-		case '1':
-			time = 500;
-			break;
-		case '2':
-			time = 400;
-			break;
-		case '3':
-			time = 300;
-			break;
-		case '4':
-			time = 150;
-			break;
-		case '5':
-			time = 75;
-			break;
-		}
+
+		select_difficulty(time);
 
 		clrscr();
 
@@ -126,12 +112,12 @@ int main() {
 			Sleep(time);
 		}
 		k = game_over();
-		clrscr();
+
 	} while (k != '0');
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+
 int inputKey()
 {
 	if (_kbhit())
@@ -177,7 +163,6 @@ void gotoXY(int x, int y)
 	coord.Y = y;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
-
 
 int whereX()
 {
@@ -226,6 +211,7 @@ void draw_snake(TOADO last_point) {
 	gotoXY(last_point.x, last_point.y);
 	cout << " ";
 }
+
 TOADO move(int huong) {
 	TOADO last_point = ran[soDot - 1];
 	for (int i = 1; i < soDot; ++i) {
@@ -293,20 +279,21 @@ int game_over() {
 	clrscr();
 	setTextColor(12);
 	cout << "Your score: " << soDot - DEFAULT_DOT << "\n";
-	soDot = DEFAULT_DOT;
+	soDot = DEFAULT_DOT;									// dat lai chieu dai cua ran
 	setTextColor(10);
 	cout << "Press 1 to try again." << "\n" << "Press 0 to exit." << "\n";
 	int k;
 	do {
 		k = _getch();
 	} while (k != '1' && k != '0');
+	clrscr();
 	return k;
 }
 
 TOADO random_fruit() {
 	srand(time(0));
 	TOADO temp;
-	temp.x = TRAI + 1 + rand() % (PHAI - TRAI - 1); // random tu (TRAI, PHAI)
+	temp.x = TRAI + 1 + rand() % (PHAI - TRAI - 1);			// random tu (TRAI, PHAI)
 	temp.y = TREN + 1 + rand() % (DUOI - TREN - 1);
 	temp.color = rand() % 15 + 1;
 	setTextColor(temp.color);
@@ -326,16 +313,41 @@ bool check_snake_eat(TOADO fruit) {
 void snake_eat(TOADO& fruit, int& time) {
 	fruit = random_fruit();
 	soDot++;
-	if (time > 75) {	// gioi han de ran khong chay qua nhanh
-		time -= 5;		// tang toc do cua ran
+	if (time > 75) {					// gioi han de ran khong chay qua nhanh
+		time -= 5;						// tang toc do cua ran
 	}
 }
 
+
 void display_menu() {
-	cout << "Chon do kho: " << "\n";
+	cout << "Chon do kho:" << "\n";
 	cout << "1. Rat de" << "\n";
 	cout << "2. De" << "\n";
 	cout << "3. Trung binh" << "\n";
 	cout << "4. Kho" << "\n";
 	cout << "5. Cuc kho" << "\n";
+}
+
+void select_difficulty(int& time) {
+	int dokho;
+	do {
+		dokho = _getch();
+		switch (dokho) {
+		case '1':
+			time = 500;				// rat de
+			break;
+		case '2':
+			time = 400;				// de
+			break;
+		case '3':
+			time = 300;				// trung binh
+			break;
+		case '4':
+			time = 150;				// kho
+			break;
+		case '5':
+			time = 55;				// rat kho
+			break;
+		}
+	} while (dokho < '1' || dokho > '5');
 }
