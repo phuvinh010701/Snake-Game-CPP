@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <conio.h>
 #include <windows.h>
+#include <ctime>
 #include <iostream>
 
 using namespace std;
@@ -34,6 +35,8 @@ using namespace std;
 // hinh dang cua mot not ran
 #define DOT_RAN 254
 
+//hinh dang cua fruit
+#define FRUIT 42
 // chieu dai max
 #define MAX 100
 
@@ -42,15 +45,17 @@ using namespace std;
 #define DUOI 20
 #define TRAI 0
 #define PHAI 60
-
+// so do ban dau 
+#define DEFAULT_DOT 2
 struct TOADO {
 	int x, y;
+	int color;
 };
 
 TOADO ran[MAX];
 int soDot = 2;
 
-int inputKey();
+int inputKey(); // lay phim tu keyboard
 void clrscr(); // xoa man hinh
 void gotoXY(int x, int y); // di chuyen den toa do XY
 int whereX(); // vi tri X
@@ -63,21 +68,50 @@ TOADO move(int huong); // di chuyen ran
 void batsk(int& huong); // bat su kien tu ban phim
 void draw_wall(); // ve tuong
 bool check_game_over(); // kiem tra dung game
-int game_over();
-
+int game_over(); // xu li game over
+TOADO random_fruit(); // ran dom moi
+bool check_snake_eat(TOADO fruit); // kiem tra ran an moi
+void snake_eat(TOADO& fruit, int& time); // xu li khi ran an duoc moi
+void display_menu();
 ///////////////////////////////////////////////////////////////////////////////////
 int main() {
 	int k;
 	do {
-		clrscr();
 		setTextColor(15);
-		init_snake();
+		display_menu();
+		int dokho;
+		int time;
+		dokho = _getch();
+		switch (dokho) {
+		case '1':
+			time = 500;
+			break;
+		case '2':
+			time = 400;
+			break;
+		case '3':
+			time = 300;
+			break;
+		case '4':
+			time = 150;
+			break;
+		case '5':
+			time = 75;
+			break;
+		}
 
-		int huong = KEY_RIGHT;
+		clrscr();
+
+		setTextColor(15);
+
+		init_snake();
 		noCursorType();
 		draw_wall();
-		// game loop
 
+		int huong = KEY_RIGHT;
+		TOADO fruit = random_fruit();
+
+		// game loop
 		while (true) {
 
 			TOADO last_point = move(huong);
@@ -86,10 +120,15 @@ int main() {
 			if (check_game_over()) {
 				break;
 			}
-			Sleep(100);
+			if (check_snake_eat(fruit)) {
+				snake_eat(fruit, time);
+			}
+			Sleep(time);
 		}
 		k = game_over();
+		clrscr();
 	} while (k != '0');
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -172,13 +211,16 @@ void setTextColor(int color)
 void init_snake() {
 	ran[0].x = ran[0].y = 1;
 	ran[1].x = ran[1].y = 2;
+	ran[0].color = 1;
+	ran[1].color = 2;
 }
 
 void draw_snake(TOADO last_point) {
-
+	srand(time(0));
 	for (int i = 0; i < soDot; ++i) {
+		setTextColor(ran[i].color);
 		gotoXY(ran[i].x, ran[i].y);
-		cout << 'X';
+		cout << (char)254;
 	}
 
 	gotoXY(last_point.x, last_point.y);
@@ -186,8 +228,12 @@ void draw_snake(TOADO last_point) {
 }
 TOADO move(int huong) {
 	TOADO last_point = ran[soDot - 1];
+	for (int i = 1; i < soDot; ++i) {
+		ran[i].color = ran[i - 1].color;
+	}
 	for (int i = soDot - 1; i >= 1; --i) {
 		ran[i] = ran[i - 1];
+
 	}
 	switch (huong) {
 	case KEY_UP:
@@ -208,10 +254,10 @@ TOADO move(int huong) {
 
 void batsk(int& huong) {
 	int key = inputKey();
-	if (key == 1072) huong = KEY_UP;
-	else if (key == 1080) huong = KEY_DOWN;
-	else if (key == 1075) huong = KEY_LEFT;
-	else if (key == 1077) huong = KEY_RIGHT;
+	if (key == 1072 && huong != 1080) huong = KEY_UP;
+	else if (key == 1080 && huong != 1072) huong = KEY_DOWN;
+	else if (key == 1075 && huong != 1077) huong = KEY_LEFT;
+	else if (key == 1077 && huong != 1075) huong = KEY_RIGHT;
 	else {
 		return;
 	}
@@ -219,6 +265,7 @@ void batsk(int& huong) {
 
 void draw_wall() {
 	for (int x = TRAI; x <= PHAI; ++x) {
+		setTextColor(12);
 		gotoXY(x, TREN);
 		cout << (char)223;
 		gotoXY(x, DUOI);
@@ -245,12 +292,50 @@ bool check_game_over() {
 int game_over() {
 	clrscr();
 	setTextColor(12);
-	cout << "Your score: " << soDot - 2 << "\n";
+	cout << "Your score: " << soDot - DEFAULT_DOT << "\n";
+	soDot = DEFAULT_DOT;
 	setTextColor(10);
-	cout << "Press 1 to try again." << "\n" << "Press 0 to exit.";
+	cout << "Press 1 to try again." << "\n" << "Press 0 to exit." << "\n";
 	int k;
 	do {
 		k = _getch();
 	} while (k != '1' && k != '0');
 	return k;
+}
+
+TOADO random_fruit() {
+	srand(time(0));
+	TOADO temp;
+	temp.x = TRAI + 1 + rand() % (PHAI - TRAI - 1); // random tu (TRAI, PHAI)
+	temp.y = TREN + 1 + rand() % (DUOI - TREN - 1);
+	temp.color = rand() % 15 + 1;
+	setTextColor(temp.color);
+	gotoXY(temp.x, temp.y);
+	cout << (char)FRUIT;
+	return temp;
+}
+
+bool check_snake_eat(TOADO fruit) {
+	if (ran[0].x == fruit.x && ran[0].y == fruit.y) {
+		ran[0] = fruit;
+		return true;
+	}
+	return false;
+}
+
+void snake_eat(TOADO& fruit, int& time) {
+	fruit = random_fruit();
+	soDot++;
+	if (time > 75) {	// gioi han de ran khong chay qua nhanh
+		time -= 5;		// tang toc do cua ran
+	}
+}
+
+void display_menu() {
+	cout << "Chon do kho: " << "\n";
+	cout << "1. Rat de" << "\n";
+	cout << "2. De" << "\n";
+	cout << "3. Trung binh" << "\n";
+	cout << "4. Kho" << "\n";
+	cout << "5. Cuc kho" << "\n";
 }
