@@ -214,9 +214,6 @@ void draw_snake(TOADO last_point) {
 
 TOADO move(int huong) {
 	TOADO last_point = ran[soDot - 1];
-	for (int i = 1; i < soDot; ++i) {
-		ran[i].color = ran[i - 1].color;
-	}
 	for (int i = soDot - 1; i >= 1; --i) {
 		ran[i] = ran[i - 1];
 
@@ -320,7 +317,18 @@ void snake_eat(TOADO& fruit, int& time) {
 
 
 void display_menu() {
-	cout << "Chon do kho:" << "\n";
+	cout << "\n\n     MINI GAME: \n\n";
+	cout << "         .*****.   ***       **         ***         **   '*'   *.*.*.*.*.   " << endl;
+	cout << "        **'    '*  **'*      **        *' '*        **  '*'     **''''''*   " << endl;
+	cout << "        **      '  ** *'     **       *'   '*       ** '*'      **          " << endl;
+	cout << "         **        **  '*    **      '*     *'      **'*'       **.....     " << endl;
+	cout << "           '**.    **   *.   **     .*'.....'*.     ***'        **.*.*.     " << endl;
+	cout << "              '*   **    *'  **     *.*.*.*.*.*     **'*'       **          " << endl;
+	cout << "        .      **  **     '* **    *'         '*    ** '*'      **          " << endl;
+	cout << "        **.   .**  **      *'**   '*           *'   **  '*'     **......*   " << endl;
+	cout << "         '*****'   **       ***  '*'           '*'  **   '*'.  *'*'*'*'*'   " << endl;
+
+	cout << "\nChon do kho:" << "\n";
 	cout << "1. Rat de" << "\n";
 	cout << "2. De" << "\n";
 	cout << "3. Trung binh" << "\n";
