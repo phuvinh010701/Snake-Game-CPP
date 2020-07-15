@@ -209,7 +209,7 @@ void draw_snake(TOADO last_point) {
 	}
 
 	gotoXY(last_point.x, last_point.y);
-	cout << " ";
+	if(last_point.x != 0 && last_point.y != 0) cout << " ";
 }
 
 TOADO move(int huong) {
