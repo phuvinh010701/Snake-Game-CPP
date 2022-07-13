@@ -6,8 +6,8 @@
 
 ## Play
 
-<img src='image/in_game.png' style='width:50px'>
+<img src='images/in_game.png' style='width:50px'>
 
 ## Lose
 
-<img scr='image/lose.png' style='width:50px'>
+<img scr='images/lose.png' style='width:50px'>
