@@ -10,4 +10,4 @@
 
 ## Lose
 
-<img scr='images/lose.png' style='width:50%'>
+<img src='images/lose.png' style='width:50%'>
